@@ -4,10 +4,11 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-	<camelContext
-		xmlns="http://camel.apache.org/schema/spring">
+	<camelContext 
+		xmlns="http://camel.apache.org/schema/spring" >
+	
 
-		<route customId="true" id="route1">
+		<route trace="true" id="route1">
 
 			<!-- Read files from input directory -->
 			<from uri="file:/home/user/Desktop/Payment_file" />
@@ -16,16 +17,88 @@
 			<!-- Transform content to UpperCase -->
 			<process ref="myFileProcessor" />
 			<log message="the nessage  after  upper case :::::::${body}"></log>
+			<log message="the header :::::::${headers}"></log>
+
 
 			<log message="the data ${header.accountNumber}"></log>
 
 			<log message="the data ${id}"></log>
-			
-			<log message="the bank  info bankName ${header.bankInfo.bankName}"></log>
-			
-			<log message="the bank  info status ${header.bankInfo.status}" loggingLevel="INFO"></log>
-			
+
+			<log
+				message="the bank  info bankName ${header.bankInfo.bankName}"></log>
+
+			<log message="the bank  info status ${header.bankInfo.status}"
+				loggingLevel="INFO"></log>
+
 			<log message="the current  date ${date:now:yyyy-MM-dd HH:mm:ss}"></log>
+
+			<log
+				message="the jvm system property OS NAME ::::::::::${sys.os.name}"></log>
+
+			<log
+				message="the jvm system property OS NAME ::::::::::${sys.os.name}"></log>
+
+
+			<log
+				message="the jvm system property JAVA HOME ::::::::::${sys.java.home}"></log>
+
+
+			<log
+				message="the jvm system property  JRE VERSION ::::::::::${sys.java.runtime.version}"></log>
+
+			<log
+				message="the jvm system property  FILE SEPARATOR ::::::::::${sys.file.separator}"></log>
+
+			<log message="the thread name::::::::::${threadName}"></log>
+
+
+			<!-- FILE LANGUAGE OPTIONS -->
+			<log message="file name::::::::::${file:name}"></log>
+
+			<log
+				message="file absolute pathis ::::::::::${file:absolute.path}"></log>
+
+			<!-- setting the VALUES using simple -->
+			<setHeader headerName="exam">
+				<simple>${header.bankInfo.bankName}</simple>
+			</setHeader>
+			<log message="the exam  name::::::::::${header.exam}"></log>
+
+
+
+			<setHeader headerName="mypain">
+				<simple>getting job</simple>
+			</setHeader>
+
+			<log message="HEADER the exam  name::::::::::${header.mypain}"></log>
+			<!-- property setting -->
+			<setProperty propertyName="myProperty">
+				<constant>test</constant>
+			</setProperty>
+			<!-- getting property -->
+			<log
+				message="the property  value::::::::::${exchangeProperty[myProperty]}"></log>
+
+
+			<setProperty propertyName="property1">
+				<simple>MYPAIN IS EXTRAORDINARY</simple>
+			</setProperty>
+
+
+			<log
+				message="GETTING PROPERTY ::::::; ${exchangeProperty[property1]}"></log>
+
+
+			<process ref="propertyProcessor" />
+			<log
+				message="the propery from the PROCESSOR::::::${exchangeProperty[branchName]}"></log>
+			<removeHeader headerName="mypain"></removeHeader>
+
+			<log
+				message="HEADER the exam  name after remove::::::::::${header.mypain}"></log>
+
+
+
 
 			<!-- Write converted file content -->
 			<to uri="file:/home/user/Desktop/Payment_file/converted" />
@@ -33,8 +106,13 @@
 
 		</route>
 
+
+
 	</camelContext>
 
 	<bean id="myFileProcessor"
 		class="com.ece.springApachCamel.FileProcessor" />
+
+	<bean id="propertyProcessor"
+		class="com.ece.springApachCamel.PropertyProcessor"></bean>
 </beans>

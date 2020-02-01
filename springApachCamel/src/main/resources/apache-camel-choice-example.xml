@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<camelContext
+		xmlns="http://camel.apache.org/schema/spring" id="w">
+
+
+		<route customId="true" id="route2">
+			<from uri="file:/home/user/Desktop/Payment_file" />
+
+			<intercept>
+
+				<bean method="dataprocess(${id})" ref="orderService"></bean>
+
+
+			</intercept>
+			
+			<process ref="paymentProcessor"></process>
+			<log message="the  property valeue:::::;${exchangeProperty[accStatus]}"></log>
+			<choice>
+			<when>
+			<simple>${header.accountNumber}== '3335101002388'</simple>
+			<to uri="bean:orderService?method=callAccountEnquiry(${header.accountNumber})" />
+			
+			
+			</when>
+			
+			<when>
+			
+			<simple>${exchangeProperty[accStatus]}== 'A'</simple>
+						
+						<log message="inside the acccount status"></log>
+						
+		<to uri="bean:orderService?method=callAccountStatus(${exchangeProperty[accStatus]})" />
+			
+			
+			
+			</when>
+			<otherwise>
+			<setProperty propertyName="msg">
+			<constant>account should be closed</constant>
+			</setProperty>
+			<to uri="bean:orderService?method=callAccountClosed(${exchangeProperty[msg]})" />
+			
+			</otherwise>
+			
+			</choice>
+
+			<!-- Read files from input directory -->
+			<log message="STARTED:::::::::::"></log>
+
+
+			<!-- Write converted file content -->
+
+
+		</route>
+
+
+
+	</camelContext>
+	<bean id="orderService"
+		class="com.ece.springApachCamel.InterMediateProcessor"></bean>
+<bean id="paymentProcessor" class="com.ece.springApachCamel.PaymentProcessor"></bean>
+</beans>

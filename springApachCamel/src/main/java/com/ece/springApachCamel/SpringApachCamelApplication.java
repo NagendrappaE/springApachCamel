@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
-@ImportResource("sample-apache-camel.xml")
+@ImportResource({"apache-camel-choice-example.xml"})
 
 public class SpringApachCamelApplication {
 
