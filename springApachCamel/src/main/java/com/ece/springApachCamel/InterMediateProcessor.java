@@ -3,8 +3,6 @@
  */
 package com.ece.springApachCamel;
 
-import java.util.Date;
-
 /**
  * @author user
  *
@@ -29,5 +27,10 @@ public class InterMediateProcessor {
 	public void callAccountClosed(String va) {
 		System.out.println("accccclosed" + va);
 
+	}
+	
+	public  void  collageINFO(College collage) {
+		
+		System.out.println("inside the colge");
 	}
 }

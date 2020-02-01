@@ -64,9 +64,11 @@
 				<log message="THE FILTER IF CONDITION"></log>
 				
 		<process ref="myFileProcessor"></process>
+		
 
 				<to
 					uri="bean:orderService?method=callAccountClosed(${header.bankInfo.bankName})" />
+					<to uri="bean:orderService?method=collageINFO(${exchangeProperty[college]})"></to>
 				<to uri="file:/home/user/Desktop/Payment_file/finalA" />
 
 			</filter>
