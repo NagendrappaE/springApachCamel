@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	 http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<camelContext
+		xmlns="http://camel.apache.org/schema/spring">
+
+		<route customId="true" id="route1">
+
+			<!-- Read files from input directory -->
+			<from uri="file:/home/user/Desktop/Payment_file" />
+			<log message="the nessage  before  upper case :::::::${body}"></log>
+
+			<!-- Transform content to UpperCase -->
+			<process ref="myFileProcessor" />
+			<log message="the nessage  after  upper case :::::::${body}"></log>
+
+			<log message="the data ${header.accountNumber}"></log>
+
+			<log message="the data ${id}"></log>
+			
+			<log message="the bank  info bankName ${header.bankInfo.bankName}"></log>
+			
+			<log message="the bank  info status ${header.bankInfo.status}" loggingLevel="INFO"></log>
+			
+			<log message="the current  date ${date:now:yyyy-MM-dd HH:mm:ss}"></log>
+
+			<!-- Write converted file content -->
+			<to uri="file:/home/user/Desktop/Payment_file/converted" />
+
+
+		</route>
+
+	</camelContext>
+
+	<bean id="myFileProcessor"
+		class="com.ece.springApachCamel.FileProcessor" />
+</beans>
