@@ -17,40 +17,44 @@
 
 
 			</intercept>
-			
+
 			<process ref="paymentProcessor"></process>
-			<log message="the  property valeue:::::;${exchangeProperty[accStatus]}"></log>
+			<log
+				message="the  property valeue:::::;${exchangeProperty[accStatus]}"></log>
 			<choice>
-			<when>
-			<simple>${header.accountNumber}== '3335101002388'</simple>
-			<to uri="bean:orderService?method=callAccountEnquiry(${header.accountNumber})" />
-			
-			
-			</when>
-			
-			<when>
-			
-			<simple>${exchangeProperty[accStatus]}== 'A'</simple>
-						
-						<log message="inside the acccount status"></log>
-						
-		<to uri="bean:orderService?method=callAccountStatus(${exchangeProperty[accStatus]})" />
-			
-			
-			
-			</when>
-			<otherwise>
-			<setProperty propertyName="msg">
-			<constant>account should be closed</constant>
-			</setProperty>
-			<to uri="bean:orderService?method=callAccountClosed(${exchangeProperty[msg]})" />
-			
-			</otherwise>
-			
+				<when>
+					<simple>${header.accountNumber}== '3335101002388'</simple>
+					<to
+						uri="bean:orderService?method=callAccountEnquiry(${header.accountNumber})" />
+
+
+				</when>
+
+				
+				<otherwise>
+					<setProperty propertyName="msg">
+						<constant>account should be closed</constant>
+					</setProperty>
+					<to
+						uri="bean:orderService?method=callAccountClosed(${exchangeProperty[msg]})" />
+
+				</otherwise>
+
 			</choice>
 
 			<!-- Read files from input directory -->
-			<log message="STARTED:::::::::::"></log>
+			<log message="ENDED:::::::::::"></log>
+
+
+
+
+			<filter>
+<!--  			<simple>${exchangeProperty[accStatus]}== 'A'</simple>
+ --> 			
+				<method ref="orderService" method="callAccountClosed(${id})" />
+				<to uri="file:/home/user/Desktop/Payment_file/final" />
+				
+			</filter>
 
 
 			<!-- Write converted file content -->
@@ -63,5 +67,6 @@
 	</camelContext>
 	<bean id="orderService"
 		class="com.ece.springApachCamel.InterMediateProcessor"></bean>
-<bean id="paymentProcessor" class="com.ece.springApachCamel.PaymentProcessor"></bean>
+	<bean id="paymentProcessor"
+		class="com.ece.springApachCamel.PaymentProcessor"></bean>
 </beans>

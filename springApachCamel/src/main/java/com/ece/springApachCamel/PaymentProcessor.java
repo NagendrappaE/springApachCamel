@@ -20,7 +20,7 @@ public class PaymentProcessor  implements Processor{
 		exchange.getIn().setBody(originalFileContent.toLowerCase());
 		exchange.getIn().setHeader("accountNumber","3335101002388");
 		
-		exchange.setProperty("accStatus", "A");
+		exchange.setProperty("accStatus", "C");
 		
 
 		System.out.println("incoing data::::::"+exchange.getIn());
