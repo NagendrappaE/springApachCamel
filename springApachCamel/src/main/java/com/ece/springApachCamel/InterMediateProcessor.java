@@ -3,13 +3,15 @@
  */
 package com.ece.springApachCamel;
 
+import java.util.Date;
+
 /**
  * @author user
  *
  */
 public class InterMediateProcessor {
 
-	public void dataprocess(String idVal) {
+	public void dataprocess(String idVal,String adat) {
 
 		System.out.println("hiiiiiii" + idVal);
 	}

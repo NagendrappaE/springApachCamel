@@ -13,7 +13,7 @@
 
 			<intercept>
 
-				<bean method="dataprocess(${id})" ref="orderService"></bean>
+				<bean method="dataprocess(${id},${date:now:yyyy-MM-dd HH:mm:ss})" ref="orderService"></bean>
 
 
 			</intercept>
@@ -30,7 +30,7 @@
 
 				</when>
 
-				
+
 				<otherwise>
 					<setProperty propertyName="msg">
 						<constant>account should be closed</constant>
@@ -49,11 +49,26 @@
 
 
 			<filter>
-<!--  			<simple>${exchangeProperty[accStatus]}== 'A'</simple>
- --> 			
-				<method ref="orderService" method="callAccountClosed(${id})" />
-				<to uri="file:/home/user/Desktop/Payment_file/final" />
+				<simple>${exchangeProperty[accStatus]}== 'C'</simple>
+				<log message="THE FILTER IF CONDITION"></log>
+
+				<to
+					uri="bean:orderService?method=callAccountClosed(${header.accountNumber})" />
+
+				<to uri="file:/home/user/Desktop/Payment_file/finalC" />
+
+			</filter>
+
+			<filter>
+				<simple>${exchangeProperty[accStatus]}== 'A'</simple>
+				<log message="THE FILTER IF CONDITION"></log>
 				
+		<process ref="myFileProcessor"></process>
+
+				<to
+					uri="bean:orderService?method=callAccountClosed(${header.bankInfo.bankName})" />
+				<to uri="file:/home/user/Desktop/Payment_file/finalA" />
+
 			</filter>
 
 
@@ -65,6 +80,9 @@
 
 
 	</camelContext>
+		<bean id="myFileProcessor"
+		class="com.ece.springApachCamel.FileProcessor" />
+		
 	<bean id="orderService"
 		class="com.ece.springApachCamel.InterMediateProcessor"></bean>
 	<bean id="paymentProcessor"
