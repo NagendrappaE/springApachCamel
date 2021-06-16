@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd	
+	 http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring-3.5.0.xsd
+	  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<camelContext
+		xmlns="http://camel.apache.org/schema/spring" id="w">
+
+
+		<camel:endpoint id="fromId"
+			uri="file:///home/user/Flux/IN?move=.sucess&amp;moveFailed=.Error&amp;delay=3000&amp;idempotent=true&amp;idempotentRepository=#fileBasedRepo&amp;readLock=changed&amp;readLockMinLength=10500"></camel:endpoint>
+		<camel:endpoint id="endId"
+			uri="file:///home/user/Flux/OUT?doneFileName=$simple{file:name}.done&amp;fileName=$simple{file:name}"></camel:endpoint>
+
+
+
+
+		<camel:route id="routeOne">
+			<camel:from uri="ref:fromId"></camel:from>
+			 <camel:setHeader name="camelFileSize">
+			 <camel:simple>${file:size}</camel:simple>
+			 </camel:setHeader>
+			 <camel:setHeader name="camelFileName">
+			 <camel:simple>${file:onlyname}</camel:simple>
+			 </camel:setHeader>
+			 
+			 
+			<camel:process ref="filePreProcessor"></camel:process>
+			<camel:to uri="ref:endId"></camel:to>
+		</camel:route>
+
+
+
+
+	</camelContext>
+	
+	<bean id="fileBasedRepo" class="org.apache.camel.support.processor.idempotent.FileIdempotentRepository">
+	<property name="fileStore" value="/home/user/Flux/idempfilelist.txt"></property>
+	</bean>
+</beans>
