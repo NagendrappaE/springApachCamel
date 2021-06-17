@@ -21,6 +21,13 @@
 
 		<camel:endpoint id="csvpoint"
 			uri="bean:csvService?method=input"></camel:endpoint>
+			
+			
+			<camel:endpoint id="csvOutend"
+			uri="file:///home/user/Flux/CSVOUT"></camel:endpoint>
+			
+			<camel:endpoint id="velocityOut" uri="velocity:classpath:cbsResponse.vm"></camel:endpoint>
+			
 
 		<camel:route id="routeOne">
 			<camel:from uri="ref:fromId"></camel:from>
@@ -40,11 +47,32 @@
 		<camel:route id="routetwo">
 			<camel:from uri="ref:csvEndPoint">
 			</camel:from>
+
+			<camel:setHeader name="camelFileSize">
+				<camel:simple>${file:size}</camel:simple>
+			</camel:setHeader>
+			<camel:setHeader name="camelFileName">
+				<camel:simple>${file:onlyname}</camel:simple>
+			</camel:setHeader>
+
 			<camel:unmarshal>
-							<camel:csv></camel:csv>
-			
+				<camel:csv ></camel:csv>
+
 			</camel:unmarshal>
-			<camel:to uri="ref:csvpoint"></camel:to>
+
+			<camel:split>
+				<simple>${body}</simple>
+				<camel:threads maxPoolSize="10" threadName="csvThread"></camel:threads>
+				<log
+				message="the  property valeue:::::;${body}"></log>
+				<camel:to uri="mock:result" />
+				<camel:process ref="postingProcessor"></camel:process>
+				<camel:to uri="ref:velocityOut"></camel:to>
+				<camel:to uri="ref:csvOutend"></camel:to>
+				
+			</camel:split>
+
+
 		</camel:route>
 
 
@@ -61,4 +89,18 @@
 		class="org.apache.camel.component.file.AntPathMatcherFileFilter">
 		<property name="includes" value="*.csv"></property>
 	</bean>
+	
+	<!-- <bean id="csvConfig" class="org.apache.commons.csv.writer.CSVConfig">
+  <property name="fields">
+    <list>
+      <bean class="org.apache.commons.csv.writer.CSVField">
+        <property name="name" value="orderId" />
+      </bean>
+      <bean class="org.apache.commons.csv.writer.CSVField">
+        <property name="name" value="amount" />
+      </bean>
+    </list>
+  </property>
+</bean> -->
+
 </beans>

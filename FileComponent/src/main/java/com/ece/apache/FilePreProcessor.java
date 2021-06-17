@@ -16,7 +16,6 @@ public class FilePreProcessor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-		// TODO Auto-generated method stub
 		
 		
 		String fileName=(String) exchange.getIn().getHeader("camelFileName");

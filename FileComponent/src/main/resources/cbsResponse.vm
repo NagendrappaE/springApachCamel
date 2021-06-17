@@ -1,0 +1,3 @@
+<flag> ${headers.successmsg}</flag>
+<uniqref> ${headers.refnumber}</uniqref>
+<cbsref> ${headers.cbsref}</cbsref>
